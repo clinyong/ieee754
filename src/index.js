@@ -6,9 +6,10 @@ const {
   isValidNum,
   isValid64Bit,
   convertBinaryToIntegerDecimal,
-  convertBinaryToFractionDecimal
+  convertBinaryToFractionDecimal,
+  rounded
 } = require("./utils");
-const { EXPONENT_BIAS } = require("./constants");
+const { EXPONENT_BIAS, FRACTION_LEN } = require("./constants");
 
 /**
  * Convert a decimal to IEEE 754
@@ -64,7 +65,7 @@ function decimalToIEEE754(num) {
     e.unshift("0");
   }
 
-  const seq = e.concat(fraction.slice(0, 52)).join("");
+  const seq = e.concat(rounded(fraction, FRACTION_LEN)).join("");
 
   return fillSign(seq, negative);
 }

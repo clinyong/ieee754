@@ -15,7 +15,3 @@ console.log(
 );
 // 1
 ```
-
-## TODO
-
-- Check rounding rules

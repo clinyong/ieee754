@@ -1,4 +1,50 @@
 /**
+ * Add two binary num
+ * binaryAdd("10", "11") => "101"
+ *
+ * @param {string} num1
+ * @param {string} num2
+ */
+function binaryAdd(num1, num2) {
+  let maxList, minList;
+
+  if (num1.length > num2.length) {
+    maxList = num1.split("");
+    minList = num2.split("");
+  } else {
+    maxList = num2.split("");
+    minList = num1.split("");
+  }
+
+  maxList = maxList.reverse();
+  minList = minList.reverse();
+
+  let flag = false;
+  const resultList = [];
+  for (let i = 0; i < minList.length; i++) {
+    if (minList[i] === "0" && maxList[i] == "0") {
+      resultList.unshift(flag ? "1" : "0");
+      flag = false;
+    } else if (minList[i] === "1" && maxList[i] == "1") {
+      resultList.unshift(flag ? "1" : "0");
+      flag = true;
+    } else {
+      resultList.unshift(flag ? "0" : "1");
+    }
+  }
+
+  let rest = maxList
+    .slice(minList.length)
+    .reverse()
+    .join("");
+  if (flag) {
+    rest = binaryAdd(rest, "1");
+  }
+
+  return rest + resultList.join("");
+}
+
+/**
  * @param {string} num
  */
 function isValidNum(num) {
@@ -140,6 +186,28 @@ function convertBinaryToFractionDecimal(num) {
   return total;
 }
 
+/**
+ * 如果 binaryList 的长度超过 len，把 len 后面的去掉
+ * 去掉的规则：如果溢出第一位为 1，则前面部分要加 1，否则直接去掉溢出部分。
+ * rounded(["1", "0", "0", "1"], 3) => ["1", "0", "1"]
+ * rounded(["1", "0", "0", "0"], 3) => ["1", "0", "0"]
+ *
+ * @param {string[]} binaryList
+ * @returns {string[]}
+ */
+function rounded(binaryList, len) {
+  if (binaryList.length <= len) {
+    return binaryList;
+  }
+
+  const dropValue = binaryList[len];
+  const list = binaryList.slice(0, len);
+
+  return dropValue === "0"
+    ? list
+    : rounded(binaryAdd(list.join(""), "1").split(""), len);
+}
+
 exports.convertFractionDecimalToBinary = convertFractionDecimalToBinary;
 exports.convertIntegerDecimalToBinary = convertIntegerDecimalToBinary;
 exports.fillSign = fillSign;
@@ -148,3 +216,4 @@ exports.isValidNum = isValidNum;
 exports.isValid64Bit = isValid64Bit;
 exports.convertBinaryToIntegerDecimal = convertBinaryToIntegerDecimal;
 exports.convertBinaryToFractionDecimal = convertBinaryToFractionDecimal;
+exports.rounded = rounded;
