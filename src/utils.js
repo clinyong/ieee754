@@ -6,6 +6,13 @@ function isValidNum(num) {
 }
 
 /**
+ * @param {string} num
+ */
+function isValid64Bit(num) {
+  return typeof num === "string" && num.length === 64 && /^[01]+$/.test(num);
+}
+
+/**
  * @param {string[]} list
  * @param {number} len
  */
@@ -97,8 +104,47 @@ exports.convertDecimalToBinary = function convertDecimalToBinary(num) {
   };
 };
 
+/**
+ * @param {string} num
+ * @returns {number}
+ */
+function convertBinaryToIntegerDecimal(num) {
+  const len = num.length;
+
+  const list = num.split("").reverse();
+  let total = 0;
+  for (let i = 0; i < len; i++) {
+    if (list[i] === "1") {
+      total += Math.pow(2, i);
+    }
+  }
+
+  return total;
+}
+
+/**
+ * @param {string} num
+ * @returns {number}
+ */
+function convertBinaryToFractionDecimal(num) {
+  const len = num.length;
+  const list = num.split("");
+
+  let total = 0;
+  for (let i = 0; i < len; i++) {
+    if (list[i] === "1") {
+      total += Math.pow(2, (i + 1) * -1);
+    }
+  }
+
+  return total;
+}
+
 exports.convertFractionDecimalToBinary = convertFractionDecimalToBinary;
 exports.convertIntegerDecimalToBinary = convertIntegerDecimalToBinary;
 exports.fillSign = fillSign;
 exports.fillWithZero = fillWithZero;
 exports.isValidNum = isValidNum;
+exports.isValid64Bit = isValid64Bit;
+exports.convertBinaryToIntegerDecimal = convertBinaryToIntegerDecimal;
+exports.convertBinaryToFractionDecimal = convertBinaryToFractionDecimal;

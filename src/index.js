@@ -3,11 +3,15 @@ const {
   convertIntegerDecimalToBinary,
   fillSign,
   fillWithZero,
-  isValidNum
+  isValidNum,
+  isValid64Bit,
+  convertBinaryToIntegerDecimal,
+  convertBinaryToFractionDecimal
 } = require("./utils");
+const { EXPONENT_BIAS } = require("./constants");
 
 /**
- * convert a decimal to IEEE 754
+ * Convert a decimal to IEEE 754
  *
  * @param {string} num
  */
@@ -65,4 +69,28 @@ function decimalToIEEE754(num) {
   return fillSign(seq, negative);
 }
 
+/**
+ * Convert IEEE 754 to decimal
+ *
+ * @param {string} num
+ * @returns {number}
+ */
+function ieee754ToDecimal(num) {
+  if (!isValid64Bit(num)) {
+    throw new TypeError("Invalid input");
+  }
+
+  const sign = Number(num[0]);
+  num = num.slice(1);
+  if (/0{63}/.test(num)) {
+    return 0;
+  }
+
+  const e = convertBinaryToIntegerDecimal(num.slice(0, 11)) - EXPONENT_BIAS;
+  const fraction = convertBinaryToFractionDecimal(num.slice(11));
+
+  return Math.pow(-1, sign) * (1 + fraction) * Math.pow(2, e);
+}
+
 exports.decimalToIEEE754 = decimalToIEEE754;
+exports.ieee754ToDecimal = ieee754ToDecimal;
